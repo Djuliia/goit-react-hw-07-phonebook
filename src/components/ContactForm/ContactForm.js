@@ -8,8 +8,9 @@ import {
   ErrorMsg,
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactSlice';
+
 import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/operations';
 
 const schema = Yup.object().shape({
   name: Yup.string()
@@ -32,10 +33,10 @@ export const ContactForm = () => {
   const nameInputId = nanoid();
   const numberInputId = nanoid();
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const { items } = useSelector(getContacts);
 
   const handleSubmit = (values, { resetForm }) => {
-    const existingContact = contacts.find(
+    const existingContact = items.find(
       contact => contact.name.toLowerCase() === values.name.toLowerCase()
     );
     if (existingContact) {

@@ -5,15 +5,21 @@ import {
   StyledDeleteButton,
 } from './ContactList.styled';
 import { getContacts, getFilter } from 'redux/selectors';
-import { deleteContact } from 'redux/contactSlice';
+
+import { useEffect } from 'react';
+import { deleteContact, fetchContacts } from 'redux/operations';
 
 export const ContactList = () => {
-  const contacts = useSelector(getContacts);
+  const { items, error, isLoading } = useSelector(getContacts);
   const filtered = useSelector(getFilter);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
   const getFilteredContacts = () => {
-    return contacts.filter(({ name }) =>
+    return items.filter(({ name }) =>
       name.toLowerCase().includes(filtered.toLowerCase())
     );
   };
@@ -21,15 +27,21 @@ export const ContactList = () => {
   const filteredContacts = getFilteredContacts();
 
   return (
-    <StyledContactList>
-      {filteredContacts.map(({ id, name, number }) => (
-        <StyledContactListItem key={id}>
-          {name}: {number}
-          <StyledDeleteButton onClick={() => dispatch(deleteContact(id))}>
-            Delete
-          </StyledDeleteButton>
-        </StyledContactListItem>
-      ))}
-    </StyledContactList>
+    <>
+      {isLoading && <p>Loading contacts...</p>}
+      {error && <p>{error}</p>}
+      {items && (
+        <StyledContactList>
+          {filteredContacts.map(({ id, name, number }) => (
+            <StyledContactListItem key={id}>
+              {name}: {number}
+              <StyledDeleteButton onClick={() => dispatch(deleteContact(id))}>
+                Delete
+              </StyledDeleteButton>
+            </StyledContactListItem>
+          ))}
+        </StyledContactList>
+      )}
+    </>
   );
 };

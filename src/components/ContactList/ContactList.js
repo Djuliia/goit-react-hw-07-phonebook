@@ -4,33 +4,33 @@ import {
   StyledContactListItem,
   StyledDeleteButton,
 } from './ContactList.styled';
-import { getContacts, getFilter } from 'redux/selectors';
+import {
+  selectContacts,
+  selectError,
+  selectFilteredContacts,
+  selectisLoading,
+} from 'redux/selectors';
 
 import { useEffect } from 'react';
 import { deleteContact, fetchContacts } from 'redux/operations';
 
 export const ContactList = () => {
-  const { items, error, isLoading } = useSelector(getContacts);
-  const filtered = useSelector(getFilter);
+  const contacts = useSelector(selectContacts);
+  const error = useSelector(selectError);
+  const isLoading = useSelector(selectisLoading);
   const dispatch = useDispatch();
+
+  const filteredContacts = useSelector(selectFilteredContacts);
 
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
 
-  const getFilteredContacts = () => {
-    return items.filter(({ name }) =>
-      name.toLowerCase().includes(filtered.toLowerCase())
-    );
-  };
-
-  const filteredContacts = getFilteredContacts();
-
   return (
     <>
       {isLoading && <p>Loading contacts...</p>}
       {error && <p>{error}</p>}
-      {items && (
+      {contacts && (
         <StyledContactList>
           {filteredContacts.map(({ id, name, number }) => (
             <StyledContactListItem key={id}>

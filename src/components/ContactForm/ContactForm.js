@@ -9,7 +9,7 @@ import {
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 import { addContact } from 'redux/operations';
 
 const schema = Yup.object().shape({
@@ -33,7 +33,7 @@ export const ContactForm = () => {
   const nameInputId = nanoid();
   const numberInputId = nanoid();
   const dispatch = useDispatch();
-  const { items } = useSelector(getContacts);
+  const { items } = useSelector(selectContacts);
 
   const handleSubmit = (values, { resetForm }) => {
     const existingContact = items.find(
